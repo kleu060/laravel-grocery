@@ -12,7 +12,7 @@ use App\Http\Controllers\CategoryController;
 use ArielMejiaDev\LarapexCharts\LarapexChart;
 
 
-use App\Charts\MonthlyUsersChart;
+use App\Charts\ProductPriceHistoryChart;
 
 use Inertia\Inertia;
 use Inertia\Response;
@@ -142,7 +142,7 @@ class PnsController extends Controller
     public function product( Request $request ): \Inertia\Response
     {
 
-        $chart = new MonthlyUsersChart(new LarapexChart());
+        $chart = new ProductPriceHistoryChart(new LarapexChart());
         $categories = Category::all();
 
         $product_id = $request->route("id");
