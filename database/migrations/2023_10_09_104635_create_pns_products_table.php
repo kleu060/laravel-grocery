@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->text("productId");
             $table->text("productName");
-            $table->text("PriceMode");
-            $table->text("PricePerItem");
-            $table->text("HasMultiBuyDeal");
-            $table->text("MultiBuyDeal");
-            $table->text("PricePerBaseUnitText");
-            $table->text("MultiBuyBasePrice");
-            $table->text("MultiBuyPrice");
-            $table->text("MultiBuyQuantity");
-            $table->text("PromoBadgeImageLabel");
+            // $table->text("PriceMode");
+            // $table->text("PricePerItem");
+            // $table->text("HasMultiBuyDeal");
+            // $table->text("MultiBuyDeal");
+            // $table->text("PricePerBaseUnitText");
+            // $table->text("MultiBuyBasePrice");
+            // $table->text("MultiBuyPrice");
+            // $table->text("MultiBuyQuantity");
+            // $table->text("PromoBadgeImageLabel");
             $table->timestamps();
         });
     }

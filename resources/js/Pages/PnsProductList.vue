@@ -60,7 +60,7 @@ const changeCategory = (tmpcategory_id) => {
                             </thead>
                             <tbody>
                                 <tr v-for="product in products">
-                                    <td class="px-6 py-2">{{ product.category.name}}</td>
+                                    <td class="px-6 py-2">{{ product.category_name}}</td>
                                     <td class="px-6 py-2"><a :href="route('pns.product', { id: product.productId })">{{ product.productName}}</a></td>
                                     <td class="px-6 py-2">{{ product.PriceMode}}</td>
                                     <td class="px-6 py-2">${{ product.PricePerItem}}</td>
