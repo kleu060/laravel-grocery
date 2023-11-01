@@ -1,8 +1,8 @@
 ## About This Project
 
-This Application will Import all the products from a Groceries store (Pak n Save).  List all the product, its price  and display product price history in a line graph.
+This Application will Import all the products from a grocery store (Pak n Save).  List all the products, and their prices  and display product price history in a line graph.
 
-This application is built using laravel, and the frontend is implemented using Inertia/Vue frontend stacks.
+This application is built using Laravel, and the front end is implemented using Inertia/Vue frontend stacks.
 
 ## Installation
 1.  Download the repository
@@ -17,3 +17,7 @@ This application is built using laravel, and the frontend is implemented using I
 ## Dependencies
 1.  laravel/breeze
 2.  arielmejiadev/larapex-charts
+
+
+## Data Retrival
+A commandline tools PhantomJS (https://phantomjs.org/quick-start.html) is used to retrieve data from Pak N Save website.
