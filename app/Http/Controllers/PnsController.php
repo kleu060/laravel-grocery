@@ -109,7 +109,9 @@ class PnsController extends Controller
             $newPnsProduct->category_id = $category_id;
             $newPnsProduct->productName = $product_arr["productName"];
 
-
+            // $date = "2023-10-23 00:00:00";
+            // $newPnsProduct->created_at = $date;
+            // $newPnsProduct->updated_at = $date;
 
             $newPnsProduct->save();
             echo "New Product: ".$product_arr["productId"]." created: ".$newPnsProduct->id."<br />";
@@ -130,6 +132,7 @@ class PnsController extends Controller
      */
     public function saveProductPrice ($product_arr, $product_id):void
     {
+        
         $pnsProductPrice = new ProductPrice();
         $pnsProductPrice->pns_product_id = $product_id;
         $pnsProductPrice->PriceMode = $product_arr["ProductDetails"]["PriceMode"];
@@ -142,6 +145,9 @@ class PnsController extends Controller
         $pnsProductPrice->MultiBuyQuantity = $product_arr["ProductDetails"]["MultiBuyQuantity"];
         $pnsProductPrice->PromoBadgeImageLabel = $product_arr["ProductDetails"]["PromoBadgeImageLabel"];
 
+        // $date = "2023-10-23 00:00:00";
+        // $pnsProductPrice->created_at = $date;
+        // $pnsProductPrice->updated_at = $date;
 
         echo "".$product_arr["productId"]." Price update<br />";
         $pnsProductPrice->save();

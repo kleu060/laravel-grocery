@@ -18,14 +18,14 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
@@ -37,10 +37,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/pnsproduct', [PnsController::class, 'listProduct'])->name('pns.listproductall');
-    Route::get('/pnsproduct/{category_id}', [PnsController::class, 'listProduct'])->name('pns.listproduct');
-    Route::get('/product/{id}', [PnsController::class, 'product'])->name('pns.product');
+    Route::get('/import-pns-products', [PnsController::class, 'index']);
+
 });
 
-Route::get('/import-pns-products', [PnsController::class, 'index']);
+
+Route::get('/', [PnsController::class, 'listProduct'])->name('pns.listproductall');
+Route::get('/pnsproduct/{category_id}', [PnsController::class, 'listProduct'])->name('pns.listproduct');
+Route::get('/product/{id}', [PnsController::class, 'product'])->name('pns.product');
+
 require __DIR__.'/auth.php';

@@ -26,10 +26,14 @@ const changeCategory = (tmpcategory_id) => {
     })
 };
 
+const addToCartAction = () =>{
+    console.log("add to cart");    
+}
+
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="PNS Product List" />
 
     <AuthenticatedLayout>
         <template #header>
@@ -44,6 +48,7 @@ const changeCategory = (tmpcategory_id) => {
                     <div class="p-12 text-center">
                         <h2>Categories</h2> 
                         <ul class="flex flex-wrap items-center justify-center">
+                            <li class="mr-4 hover:underline md:mr-6 " ><a  href="/">All</a></li>
                             <li class="mr-4 hover:underline md:mr-6 "  v-for="category in categories"><a @click="changeCategory(category.id)" href="#">{{ category.name }}</a></li>
                         </ul>
                     </div>
@@ -55,6 +60,7 @@ const changeCategory = (tmpcategory_id) => {
                                     <th class="px-6 py-2">Product Name</th>
                                     <th class="px-6 py-2">Price Mode</th>
                                     <th class="px-6 py-2">Price Per Item</th>
+                                    <th class="px-6 py-2">Add to Cart</th>
 
                                 </tr>
                             </thead>
@@ -64,6 +70,10 @@ const changeCategory = (tmpcategory_id) => {
                                     <td class="px-6 py-2"><a :href="route('pns.product', { id: product.productId })">{{ product.productName}}</a></td>
                                     <td class="px-6 py-2">{{ product.PriceMode}}</td>
                                     <td class="px-6 py-2">${{ product.PricePerItem}}</td>
+                                    <td class="px-6 py-2 flex">
+                                        <input type="text" class="input-quantity"/>
+                                        <button type="button" class="px-6" :click="addToCartAction()">Add</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         
