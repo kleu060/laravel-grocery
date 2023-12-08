@@ -26,12 +26,20 @@ class PnsController extends Controller
 
     /**
      * Import PNS products to database
-     * @param Request $request
      * 
      * @return void
      */
-    public function index(Request $request):void
+
+    public string $today = "";
+    public string $date = "";
+    public string $folder = "";
+
+
+    public function index():void
     {
+
+        // $this->date = "2023-11-02 00:00:00";
+        $this->folder = "pns_products";
         echo "<br /><br />";
         $categories = [];
         $categories[] = new CategoryController(41, "drink", 6);
@@ -48,8 +56,8 @@ class PnsController extends Controller
             $file = $a->file;
             $category_id = $a->category_id;
             for ( $i = 1; $i <= $max; $i++){
-                $folder = "pns_products";
-                $filename= $folder."/".$file."_".$i.".txt";
+                // $folder = "pns_products_20231009";
+                $filename= $this->folder."/".$file."_".$i.".txt";
                 if (Storage::disk('local')->exists($filename)) {
                     // $products = Storage::disk('local')->get($filename);
                     // $products_arr = preg_split('/\+===\+/', $products);
@@ -68,6 +76,10 @@ class PnsController extends Controller
         echo "Total ". $total . " products created<br />";
         $today = date("Y-m-d");
         Storage::disk('local')->put("latest_date.txt", $today);
+        Storage::disk('local')->move($this->folder, $this->folder."-".$today);
+
+
+        
     }
 
     /**
@@ -109,9 +121,9 @@ class PnsController extends Controller
             $newPnsProduct->category_id = $category_id;
             $newPnsProduct->productName = $product_arr["productName"];
 
-            // $date = "2023-10-23 00:00:00";
-            // $newPnsProduct->created_at = $date;
-            // $newPnsProduct->updated_at = $date;
+            // $date = "2023-11-12 00:00:00";
+            // $newPnsProduct->created_at = $this->date;
+            // $newPnsProduct->updated_at = $this->date;
 
             $newPnsProduct->save();
             echo "New Product: ".$product_arr["productId"]." created: ".$newPnsProduct->id."<br />";
@@ -145,9 +157,9 @@ class PnsController extends Controller
         $pnsProductPrice->MultiBuyQuantity = $product_arr["ProductDetails"]["MultiBuyQuantity"];
         $pnsProductPrice->PromoBadgeImageLabel = $product_arr["ProductDetails"]["PromoBadgeImageLabel"];
 
-        // $date = "2023-10-23 00:00:00";
-        // $pnsProductPrice->created_at = $date;
-        // $pnsProductPrice->updated_at = $date;
+        // $date = "2023-11-12 00:00:00";
+        // $pnsProductPrice->created_at = $this->date;
+        // $pnsProductPrice->updated_at = $this->date;
 
         echo "".$product_arr["productId"]." Price update<br />";
         $pnsProductPrice->save();
@@ -163,47 +175,44 @@ class PnsController extends Controller
 
     public function listProduct(Request $request): \Inertia\Response
     {
-        $category_id = $request->route('category_id');
-        
+        $category_id = $request->route('category_id') != null ? $request->route('category_id') : "";        
         $categories = Category::all();
 
         
         // $today = date("Y-m-d");
         $today = Storage::disk('local')->get("latest_date.txt");
+        $uri = $request->route()->uri;
+        $redirectRoute = "pns.listproduct";
+        // dd($request->route());
+        $productsQuery = DB::table("pns_products")
+            ->join("product_prices", "product_prices.pns_product_id", "=" , "pns_products.id")
+            ->join("categories", "pns_products.category_id", "=" , "categories.id")
+            ->whereDate("product_prices.created_at", $today)
+            ->select(["pns_products.id as id", "pns_product_id",  "PriceMode", "PricePerItem", "categories.name as category_name", "productName", "productId", "product_prices.PromoBadgeImageLabel as label"]);
 
+
+        if ($category_id != "" ){
+            $productsQuery = $productsQuery->where("pns_products.category_id", $category_id);
+        }
+        if (str_contains($uri, "extra-low")){
+            $redirectRoute = "pns.extralow";
+            $productsQuery = $productsQuery->where("product_prices.PromoBadgeImageLabel", "Extra Low");
+        }
+
+        if (str_contains($uri, "everyday-low")){
+            $redirectRoute = "pns.everydaylow";
+            $productsQuery = $productsQuery->where("product_prices.PromoBadgeImageLabel", "Everyday Low");
+        }
+        $products= $productsQuery->get();
         
-        if ( $category_id == ""){
-
-
-            $products = DB::table("pns_products")
-            ->join("product_prices", "product_prices.pns_product_id", "=" , "pns_products.id")
-            ->join("categories", "pns_products.category_id", "=" , "categories.id")
-            ->whereDate("product_prices.created_at", $today)
-            ->select(["pns_product_id",  "PriceMode", "PricePerItem", "categories.name as category_name", "productName", "productId"])
-            ->get();
-
-            // dd( $products) ; exit();
-            
-        }
-        else{
-
-            $products = DB::table("pns_products")
-            ->join("product_prices", "product_prices.pns_product_id", "=" , "pns_products.id")
-            ->join("categories", "pns_products.category_id", "=" , "categories.id")
-            ->whereDate("product_prices.created_at", $today)
-            ->where("pns_products.category_id", $category_id)
-            ->select(["pns_product_id",  "PriceMode", "PricePerItem", "categories.name as category_name", "productName", "productId"])
-            ->get();
-
-            // dd( $products) ; exit();
-        }
-        // dd($products);
-        // print_r($products);
+        $total = $products->count();
+        
         return Inertia::render('PnsProductList', [
             'products' => $products,
             'category_id' => $category_id,
             'categories' => $categories,
-
+            'redirect_route' => $redirectRoute,
+            'total' => $total,
         ]);
     }
 
@@ -227,7 +236,7 @@ class PnsController extends Controller
             // ->join("categories", "pns_products.category_id", "=" , "categories.id")
             ->groupBy(["productId", DB::raw('DATE(product_prices.created_at)')])
             // ->where("pns_products.category_id", $category_id)
-            ->select(["productId", "product_prices.created_at",  "PriceMode", "PricePerItem","productName"])
+            ->select(["pns_products.id as id", "productId", "product_prices.created_at",  "PriceMode", "PricePerItem","productName", "product_prices.PromoBadgeImageLabel as label"])
             ->where("productId" , $product_id)
             ->get();
 
@@ -255,4 +264,10 @@ class PnsController extends Controller
 
 
      }
+
+
+
+    
+
+     
 }

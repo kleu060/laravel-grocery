@@ -34,8 +34,18 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
                             </div> -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('pns.listproductall')" :active="route().current('pns.listproduct')">
-                                    Pak n Save
+                                <NavLink :href="route('pns.listproductall')" :active="route().current('pns.listproductall')">
+                                    Pak n Save 
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('pns.aextralowall')" :active="route().current('pns.extralowall')">
+                                    Pak n Save Extra Low
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('pns.everydaylowall')" :active="route().current('pns.everydaylowall')">
+                                    Pak n Save Everyday Low
                                 </NavLink>
                             </div>
                         </div>

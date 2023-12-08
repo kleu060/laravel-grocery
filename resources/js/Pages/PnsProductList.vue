@@ -1,9 +1,14 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import { router } from '@inertiajs/vue3'
+import { router } from '@inertiajs/vue3';
+// import { inertia } from '@inertiajs/vue3';
 
-defineProps({
+import axios from 'axios';
+import { ref } from 'vue';
+
+
+const props = defineProps({
     products: {
         type: Array,
     },
@@ -14,20 +19,40 @@ defineProps({
         type: String,
         required: true,
     },
+    redirect_route: {
+        type: String,
+        required: true,
+    },
+    total: {
+        type: Number,
+        required: true,
+    },
 
 });
 
 const changeCategory = (tmpcategory_id) => {
-    let url = route('pns.listproduct', { category_id: tmpcategory_id });
-    console.log(url);
+    let url = route(props.redirect_route, { category_id: tmpcategory_id });
+    // console.log(props.redirect_route);
     // let url = "/pnsproduct/"+category_id;
     router.visit(url, {
         only: ['products'],
     })
 };
 
-const addToCartAction = () =>{
-    console.log("add to cart");    
+
+const addToCartAction = (product) =>{
+
+    axios
+    .post(route("addtocart"),{
+        data:{
+            quantity:product.quantity
+        }
+    }).then((response) => {
+        console.log(response);
+    }).catch((error) => {
+        console.error('Error:', error);
+    });
+    
 }
 
 </script>
@@ -53,6 +78,7 @@ const addToCartAction = () =>{
                         </ul>
                     </div>
                     <div class="p-12">
+                        <div>Total Products {{total}}</div>
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -60,19 +86,21 @@ const addToCartAction = () =>{
                                     <th class="px-6 py-2">Product Name</th>
                                     <th class="px-6 py-2">Price Mode</th>
                                     <th class="px-6 py-2">Price Per Item</th>
+                                    <th class="px-6 py-2">Label</th>
                                     <th class="px-6 py-2">Add to Cart</th>
 
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="product in products">
-                                    <td class="px-6 py-2">{{ product.category_name}}</td>
+                                    <td class="px-6 py-2">{{ product.id}}</td>
                                     <td class="px-6 py-2"><a :href="route('pns.product', { id: product.productId })">{{ product.productName}}</a></td>
                                     <td class="px-6 py-2">{{ product.PriceMode}}</td>
                                     <td class="px-6 py-2">${{ product.PricePerItem}}</td>
+                                    <td class="px-6 py-2">{{ product.label}}</td>
                                     <td class="px-6 py-2 flex">
-                                        <input type="text" class="input-quantity"/>
-                                        <button type="button" class="px-6" :click="addToCartAction()">Add</button>
+                                        <input type="text"  v-model="product.quantity" class="input-quantity"/>
+                                        <button type="button" class="px-6"  @click="addToCartAction(product)">Add</button>
                                     </td>
                                 </tr>
                             </tbody>

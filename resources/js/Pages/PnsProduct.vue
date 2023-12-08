@@ -41,6 +41,7 @@ defineProps({
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
                                     <th class="px-6 py-2">Record Date</th>
+                                    <th class="px-6 py-2">label</th>
                                     <th class="px-6 py-2">Price Mode</th>
                                     <th class="px-6 py-2">Price Per Item</th>
 
@@ -49,6 +50,7 @@ defineProps({
                             <tbody>
                                 <tr v-for="product in products">
                                     <td class="px-6 py-2">{{ moment(String(product.created_at )).format('MM/DD/YYYY hh:mm A') }}</td>
+                                    <td class="px-6 py-2">{{ product.label }}</td>
                                     <td class="px-6 py-2">{{ product.PriceMode }}</td>
                                     <td class="px-6 py-2">${{ product.PricePerItem }}</td>
                                 </tr>

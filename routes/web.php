@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PnsController;
+use App\Http\Controllers\PnsCartController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/import-pns-products', [PnsController::class, 'index']);
+    Route::post('/add-to-cart', [PnsCartController::class, 'addToCart'])->name('addtocart');
 
 });
 
@@ -45,5 +47,9 @@ Route::middleware('auth')->group(function () {
 Route::get('/', [PnsController::class, 'listProduct'])->name('pns.listproductall');
 Route::get('/pnsproduct/{category_id}', [PnsController::class, 'listProduct'])->name('pns.listproduct');
 Route::get('/product/{id}', [PnsController::class, 'product'])->name('pns.product');
+Route::get("/extra-low", [PnsController::class, 'listProduct'])->name('pns.aextralowall');
+Route::get("/extra-low/{category_id}", [PnsController::class, 'listProduct'])->name('pns.extralow');
+Route::get('/everyday-low', [PnsController::class, 'listProduct'])->name('pns.everydaylowall');
+Route::get('/everyday-low/{category_id', [PnsController::class, 'listProduct'])->name('pns.everydaylow');
 
 require __DIR__.'/auth.php';
